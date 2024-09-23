@@ -2,13 +2,39 @@
  * Exercise 3: Create an HTTP web server
  */
 
-const http = require('http');
+const http = require("http");
+const fs = require("fs");
 
-//create a server
-let server = http.createServer(function (req, res) {
-  // YOUR CODE GOES IN HERE
-	res.write('Hello World!'); // Sends a response back to the client
-	res.end(); // Ends the response
+const PORT = process.env.PORT || 3000;
+
+let server = http.createServer((req, res) => {
+  res.statusCode = 200;
+
+  let path = "./";
+
+  switch (req.url) {
+    case "/":
+      res.setHeader("Content-Type", "text/html");
+      path += "index.html";
+      break;
+    case "/index.js":
+      res.setHeader("Content-Type", "text/javascript");
+      path += "index.js";
+      break;
+    case "/style.css":
+      res.setHeader("Content-Type", "text/css");
+      path += "style.css";
+      break;
+  }
+
+  fs.readFile(path, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.end();
+    } else {
+      res.end(data);
+    }
+  });
 });
 
-server.listen(3000); // The server starts to listen on port 3000
+server.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
