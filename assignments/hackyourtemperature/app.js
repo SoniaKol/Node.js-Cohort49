@@ -23,8 +23,8 @@ app.post("/weather", async (req, res) => {
     );
     const data = await response.json();
 
-    if (data.cod === "404") {
-      return res.status(404).json({ weatherText: "City is not found!" });
+    if (data.cod !== 200) {
+      return res.status(data.cod).json({ weatherText: "City is not found!" });
     }
 
     const temp = data.main.temp;
